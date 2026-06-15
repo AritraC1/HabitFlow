@@ -185,9 +185,7 @@ export default function AddNewHabitScreen() {
             onChange={onTimeChange}
           />
         )}
-      </ScrollView>
 
-      <View style={styles.footer}>
         <TouchableOpacity
           style={styles.saveButton}
           activeOpacity={0.9}
@@ -195,7 +193,7 @@ export default function AddNewHabitScreen() {
         >
           <Text style={styles.saveButtonText}>Save habit</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -229,7 +227,6 @@ const styles = StyleSheet.create({
 
   content: {
     padding: 24,
-    paddingBottom: 100,
   },
 
   label: {
@@ -312,20 +309,14 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  footer: {
-    position: "absolute",
-    left: 24,
-    right: 24,
-    bottom: 48,
-  },
-
   saveButton: {
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#34865A",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  height: 48,
+  borderRadius: 24,
+  backgroundColor: theme.primary,
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: 56,
+},
 
   saveButtonText: {
     color: "#FFFFFF",
