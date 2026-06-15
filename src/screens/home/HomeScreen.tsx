@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 
 import { colors } from "@/themes/colors";
 import HabitComponent from "@/components/HabitComponent";
@@ -20,12 +20,28 @@ const theme = colors.light;
 const HomeScreen = () => {
   const habits = useAppSelector((state) => state.habits.habits);
   const isEmpty = habits.length === 0;
+  const pathname = usePathname();
+
+  const isHomeActive = pathname === "/Home" || pathname === "/";
+  const isInsightsActive = pathname === "/Insights";
 
   return (
     <SafeAreaView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <Text style={styles.logo}>HabitFlow</Text>
+
+        <TouchableOpacity
+          style={styles.navItem}
+          // onPress={() => router.push("/Profile")}
+        >
+          <Image
+            source={{
+              uri: "https://i.pravatar.cc/103",
+            }}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* BODY */}
@@ -68,20 +84,35 @@ const HomeScreen = () => {
       {/* BOTTOM NAV */}
       <View style={styles.bottomNav}>
         {/* Left */}
-        <TouchableOpacity style={styles.activeNavItem}>
-          <Ionicons name="home" size={18} color="#2E7D5A" />
-          <Text style={styles.activeNavText}>Home</Text>
+        <TouchableOpacity
+          style={[styles.navItemBox, isHomeActive && styles.activeNavItem]}
+          onPress={() => router.push("/Home")}
+        >
+          <Ionicons
+            name="home"
+            size={18}
+            color={isHomeActive ? "#2E7D5A" : "#6B746D"}
+          />
+          <Text style={isHomeActive ? styles.activeNavText : styles.navText}>
+            Home
+          </Text>
         </TouchableOpacity>
 
         {/* Right */}
-        <TouchableOpacity style={styles.navItem}>
-          <Image
-            source={{
-              uri: "https://i.pravatar.cc/100",
-            }}
-            style={styles.avatar}
+        <TouchableOpacity
+          style={[styles.navItemBox, isInsightsActive && styles.activeNavItem]}
+          // onPress={() => router.push("/Insights")}
+        >
+          <Ionicons
+            name="bar-chart"
+            size={18}
+            color={isInsightsActive ? "#2E7D5A" : "#6B746D"}
           />
-          <Text style={styles.navText}>Me</Text>
+          <Text
+            style={isInsightsActive ? styles.activeNavText : styles.navText}
+          >
+            Insights
+          </Text>
         </TouchableOpacity>
 
         {/* Center FAB */}
@@ -125,6 +156,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     color: "#2E7D5A",
+  },
+
+  navItem: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
   },
 
   /* Empty State */
@@ -209,17 +251,19 @@ const styles = StyleSheet.create({
     overflow: "visible",
   },
 
-  activeNavItem: {
+  navItemBox: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-
-    backgroundColor: "#EAF5EF",
 
     paddingHorizontal: 14,
     paddingVertical: 8,
 
     borderRadius: 18,
+  },
+
+  activeNavItem: {
+    backgroundColor: "#EAF5EF",
   },
 
   activeNavText: {
@@ -228,21 +272,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  navItem: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   navText: {
-    fontSize: 11,
     color: "#6B746D",
-    marginTop: 2,
-  },
-
-  avatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    fontWeight: "600",
+    fontSize: 12,
   },
 
   /* FAB */
