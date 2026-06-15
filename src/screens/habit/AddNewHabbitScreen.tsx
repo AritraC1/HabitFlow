@@ -18,6 +18,8 @@ import { router } from "expo-router";
 import { Category } from "@/interface/category";
 import { CategoryTypes } from "@/types/categoryTypes";
 import { colors } from "@/themes/colors";
+import { addHabit } from "@/redux/slices/habitsSlice";
+import { useAppDispatch } from "@/hooks/use-redux-hooks";
 
 const theme = colors.light;
 
@@ -65,6 +67,7 @@ const categories: Category[] = [
 ];
 
 export default function AddNewHabitScreen() {
+  const dispatch = useAppDispatch();
   const [habitName, setHabitName] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryTypes | null>(null);
@@ -88,13 +91,17 @@ export default function AddNewHabitScreen() {
   };
 
   const handleSave = () => {
-    const payload = {
-      habitName,
-      category: selectedCategory,
-      reminderTime: formattedTime,
-    };
+    if (!habitName.trim()) return;
 
-    console.log(payload);
+    dispatch(
+      addHabit({
+        name: habitName.trim(),
+        category: selectedCategory,
+        reminderTime: formattedTime,
+      }),
+    );
+
+    router.back();
   };
 
   return (
@@ -310,13 +317,13 @@ const styles = StyleSheet.create({
   },
 
   saveButton: {
-  height: 48,
-  borderRadius: 24,
-  backgroundColor: theme.primary,
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: 56,
-},
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: theme.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 56,
+  },
 
   saveButtonText: {
     color: "#FFFFFF",

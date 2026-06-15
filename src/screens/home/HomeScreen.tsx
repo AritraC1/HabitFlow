@@ -1,16 +1,24 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { colors } from "@/themes/colors";
+import HabitComponent from "@/components/HabitComponent";
+import { useAppSelector } from "@/hooks/use-redux-hooks";
 
 const theme = colors.light;
 
 const HomeScreen = () => {
-  const habits: any[] = [];
-
+  const habits = useAppSelector((state) => state.habits.habits);
   const isEmpty = habits.length === 0;
 
   return (
@@ -39,9 +47,23 @@ const HomeScreen = () => {
             </Text>
           </View>
         ) : (
-          <View>
-            <Text>Habit list goes here</Text>
-          </View>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: 16, paddingBottom: 140 }}
+          >
+            {habits.map((habit) => (
+              <HabitComponent
+                key={habit.id}
+                id={habit.id}
+                name={habit.name}
+                streak={habit.streak}
+                completedDates={habit.completedDates}
+                onEdit={() => {
+                  // navigate to edit screen later, pass habit.id
+                }}
+              />
+            ))}
+          </ScrollView>
         )}
       </View>
 
