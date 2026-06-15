@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -23,17 +17,7 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <View style={styles.brand}>
-          <Text style={styles.logo}>HabitFlow</Text>
-        </View>
-
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons
-            name="notifications-outline"
-            size={22}
-            color="#2F3A34"
-          />
-        </TouchableOpacity>
+        <Text style={styles.logo}>HabitFlow</Text>
       </View>
 
       {/* BODY */}
@@ -81,7 +65,10 @@ const HomeScreen = () => {
         </TouchableOpacity>
 
         {/* Center FAB */}
-        <TouchableOpacity style={styles.navCenter} onPress={() => router.push("/AddNew")}>
+        <TouchableOpacity
+          style={styles.navCenter}
+          onPress={() => router.push("/AddNew")}
+        >
           <Ionicons name="add" size={26} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -114,24 +101,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 
-  brand: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-
   logo: {
     fontSize: 22,
     fontWeight: "700",
     color: "#2E7D5A",
-  },
-
-  iconButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    justifyContent: "center",
-    alignItems: "center",
   },
 
   /* Empty State */
