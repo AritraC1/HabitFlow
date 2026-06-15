@@ -58,9 +58,7 @@ const HomeScreen = () => {
                 name={habit.name}
                 streak={habit.streak}
                 completedDates={habit.completedDates}
-                onEdit={() => {
-                  // navigate to edit screen later, pass habit.id
-                }}
+                onEdit={() => router.push(`/AddNew?id=${habit.id}`)}
               />
             ))}
           </ScrollView>
