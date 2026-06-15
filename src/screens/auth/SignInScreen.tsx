@@ -53,13 +53,11 @@ const SignInScreen = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.button}>
-            <Text
-              style={styles.buttonText}
-              onPress={() => router.push("/Home")}
-            >
-              Sign in
-            </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push("/Home")}
+          >
+            <Text style={styles.buttonText}>Sign in</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>
