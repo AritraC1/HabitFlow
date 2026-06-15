@@ -10,6 +10,9 @@ export const colors = {
     textSecondary: "#5F6D65",
     border: "#D8D1C3",
     placeholder: "#B1A898",
+    success: "#34D399",
+    warning: "#FBBF24",
+    error: "#fa3b3b",
   },
 
   // Dark mode

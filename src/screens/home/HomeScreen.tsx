@@ -32,7 +32,7 @@ const HomeScreen = () => {
 
         <TouchableOpacity
           style={styles.navItem}
-          // onPress={() => router.push("/Profile")}
+          onPress={() => router.push("/UserProfile")}
         >
           <Image
             source={{

@@ -11,6 +11,7 @@ export default function RootLayout() {
         <Stack.Screen name="Home" />
         <Stack.Screen name="AddNew" />
         <Stack.Screen name="toggle-habit/[id]" />
+        <Stack.Screen name="UserProfile" />
       </Stack>
     </Provider>
   );
