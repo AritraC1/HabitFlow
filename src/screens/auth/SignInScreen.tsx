@@ -55,7 +55,7 @@ const SignInScreen = () => {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push("/Home")}
+            onPress={() => router.replace("/Home")}
           >
             <Text style={styles.buttonText}>Sign in</Text>
           </TouchableOpacity>
