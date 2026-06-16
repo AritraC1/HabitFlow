@@ -100,7 +100,7 @@ const HomeScreen = () => {
         {/* Right */}
         <TouchableOpacity
           style={[styles.navItemBox, isInsightsActive && styles.activeNavItem]}
-          // onPress={() => router.push("/Insights")}
+          onPress={() => router.push("/Insights")}
         >
           <Ionicons
             name="bar-chart"
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   navCenter: {
     position: "absolute",
 
-    left: "60%",
+    left: "57%",
     marginLeft: -26,
 
     top: -20,
