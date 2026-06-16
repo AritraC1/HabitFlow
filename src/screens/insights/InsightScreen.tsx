@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
   },
   navCenter: {
     position: "absolute",
-    left: "55%",
+    left: "57%",
     marginLeft: -26,
     top: -20,
     width: 52,
