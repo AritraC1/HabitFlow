@@ -20,7 +20,7 @@ A cross-platform mobile habit tracking app built with **React Native (Expo)** an
 | Framework            | React Native + Expo (Expo Router)         |
 | Language             | TypeScript                                |
 | State Management     | Redux Toolkit                             |
-| Navigation           | Expo Router / React Navigation            |
+| Navigation           | Expo Router                               |
 | Forms & Validation   | React Hook Form                           |
 | HTTP Client          | Axios                                     |
 | Local Persistence    | AsyncStorage / Expo Secure Store          |
