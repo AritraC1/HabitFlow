@@ -78,6 +78,9 @@ See [Project Structure](#current-project-structure-post-setup) below for a break
 7. **Today / Reminder** — Full-screen habit name with swipe-to-complete
 8. **Profile / Settings** — Theme toggle, notification preferences, logout
 
+## Demo
+![Demo](assets/demo/Demo.gif)
+
 ## Roadmap
 
 - [ ] Supabase schema setup (users, habits, habit_logs)
