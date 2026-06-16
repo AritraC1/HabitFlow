@@ -68,15 +68,11 @@ const InsightScreen = () => {
     return { id: h.id, name: h.name, rate: Math.min(rate, 100) };
   });
 
-  // ── Bar color helper ─────────────────────────────────────
-
   const barColor = (rate: number) => {
     if (rate >= 80) return "#2E7D5A";
     if (rate >= 50) return "#E0A458";
     return "#C0533C";
   };
-
-  // ── Render ───────────────────────────────────────────────
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,7 +109,7 @@ const InsightScreen = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* ── This week ── */}
+          {/*  This week  */}
           <Text style={styles.sectionLabel}>This week</Text>
 
           <View style={styles.metricRow}>
@@ -154,7 +150,7 @@ const InsightScreen = () => {
             </View>
           </View>
 
-          {/* ── Bar chart ── */}
+          {/*  Bar chart  */}
           <Text style={styles.sectionLabel}>This week at a glance</Text>
 
           <View style={styles.card}>
@@ -198,7 +194,7 @@ const InsightScreen = () => {
             </View>
           </View>
 
-          {/* ── Per-habit completion ── */}
+          {/*  Per-habit completion  */}
           <Text style={styles.sectionLabel}>Per habit — last 30 days</Text>
 
           <View style={styles.card}>
@@ -232,7 +228,7 @@ const InsightScreen = () => {
             ))}
           </View>
 
-          {/* ── Streaks ── */}
+          {/*  Streaks  */}
           <Text style={styles.sectionLabel}>Current streaks</Text>
 
           <View style={styles.card}>
