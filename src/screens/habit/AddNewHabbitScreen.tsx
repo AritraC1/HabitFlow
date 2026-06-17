@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ import { CategoryTypes } from "@/types/categoryTypes";
 import { colors } from "@/themes/colors";
 import { addHabit, updateHabit, removeHabit } from "@/redux/slices/habitsSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-hooks";
+import { habitService } from "@/services/habitService";
 
 const theme = colors.light;
 
@@ -35,6 +37,7 @@ const categories: Category[] = [
 ];
 
 export default function AddNewHabitScreen() {
+  const userId = useAppSelector((state) => state.auth.user?.id);
   const dispatch = useAppDispatch();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const isEditMode = !!id;
@@ -81,35 +84,74 @@ export default function AddNewHabitScreen() {
     }
   };
 
-  const handleSave = () => {
-    if (!habitName.trim()) return;
+  const handleSave = async () => {
+    if (!habitName.trim() || !userId) return;
 
-    if (isEditMode && id) {
-      dispatch(
-        updateHabit({
+    try {
+      if (isEditMode && id) {
+        // Update in Supabase first
+        await habitService.updateHabit(
           id,
-          name: habitName.trim(),
-          category: selectedCategory,
-          reminderTime: formattedTime,
-        }),
-      );
-    } else {
-      dispatch(
-        addHabit({
-          name: habitName.trim(),
-          category: selectedCategory,
-          reminderTime: formattedTime,
-        }),
-      );
+          habitName.trim(),
+          selectedCategory,
+          formattedTime,
+        );
+        // Then update Redux
+        dispatch(
+          updateHabit({
+            id,
+            name: habitName.trim(),
+            category: selectedCategory,
+            reminderTime: formattedTime,
+          }),
+        );
+      } else {
+        // Create in Supabase first — get back the real UUID
+        const created = await habitService.createHabit(
+          userId,
+          habitName.trim(),
+          selectedCategory,
+          formattedTime,
+        );
+        // Then add to Redux with Supabase's id (not Date.now())
+        dispatch(
+          addHabit({
+            id: created.id,
+            name: created.name,
+            category: created.category,
+            reminderTime: created.reminder_time,
+          }),
+        );
+      }
+      router.back();
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
     }
-
-    router.back();
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!id) return;
-    dispatch(removeHabit(id));
-    router.back();
+
+    Alert.alert(
+      "Delete habit",
+      "This will permanently delete this habit and all its history.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await habitService.deleteHabit(id);
+              dispatch(removeHabit(id));
+              router.back();
+            } catch (error: any) {
+              Alert.alert("Error", error.message);
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (

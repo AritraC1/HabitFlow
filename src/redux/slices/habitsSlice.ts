@@ -14,6 +14,7 @@ const initialState: HabitsState = {
 };
 
 export interface AddHabitPayload {
+  id: string;
   name: string;
   category: CategoryTypes | null;
   reminderTime: string;
@@ -63,7 +64,7 @@ const habitsSlice = createSlice({
     // Add new habit
     addHabit: (state, action: PayloadAction<AddHabitPayload>) => {
       const newHabit: Habit = {
-        id: Date.now().toString(),
+        id: action.payload.id,
         name: action.payload.name,
         category: action.payload.category,
         reminderTime: action.payload.reminderTime,

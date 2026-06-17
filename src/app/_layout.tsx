@@ -1,17 +1,18 @@
 import "react-native-url-polyfill/auto";
 import { useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { store, RootState } from "@/redux/store";
 import { Stack, router } from "expo-router";
-
-import { supabase } from "@/config/supabase";
-import { store, AppDispatch } from "@/redux/store";
 import { setSession, clearSession } from "@/redux/slices/authSlice";
+import { AppDispatch } from "@/redux/store";
+import { View, ActivityIndicator } from "react-native";
+import { supabase } from "@/config/supabase";
 
 function AuthListener() {
   const dispatch = useDispatch<AppDispatch>();
+  const loading = useSelector((state: RootState) => state.auth.loading);
 
   useEffect(() => {
-    // Get session on app start
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         dispatch(setSession(session));
@@ -22,7 +23,6 @@ function AuthListener() {
       }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -36,6 +36,14 @@ function AuthListener() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#2E7D5A" />
+      </View>
+    );
+  }
 
   return null;
 }
