@@ -5,17 +5,38 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { colors } from "@/themes/colors";
+import { authService } from "@/services/authService";
 
 const theme = colors.light;
 
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignIn = async () => {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert("Missing fields", "Please enter your email and password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await authService.signIn(email.trim(), password.trim());
+      router.replace("/(tabs)/Home");
+    } catch (error: any) {
+      Alert.alert("Sign in failed", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,7 +48,6 @@ const SignInScreen = () => {
         </Text>
 
         <View style={styles.form}>
-          <View style={styles.inputGroup}></View>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
             <TextInput
@@ -37,6 +57,7 @@ const SignInScreen = () => {
               placeholderTextColor="#B1A898"
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCorrect={false}
               style={styles.input}
             />
           </View>
@@ -54,10 +75,16 @@ const SignInScreen = () => {
           </View>
 
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.replace("/Home")}
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSignIn}
+            disabled={loading}
+            activeOpacity={0.85}
           >
-            <Text style={styles.buttonText}>Sign in</Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Sign in</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -74,7 +101,6 @@ const SignInScreen = () => {
 
 export default SignInScreen;
 
-// Sign up page stylesheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -136,13 +162,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
 
     shadowColor: theme.primary,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 16,
     elevation: 8,
+  },
+
+  buttonDisabled: {
+    opacity: 0.6,
   },
 
   buttonText: {

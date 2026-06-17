@@ -1,27 +1,62 @@
 import { useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
   StyleSheet,
   Switch,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Bell, Lock, Info, Sun, ChevronRight } from "lucide-react-native";
 import { colors } from "@/themes/colors";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { authService } from "@/services/authService";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-hooks";
+import { clearSession } from "@/redux/slices/authSlice";
 
 const theme = colors.light;
 
 export default function UserProfileScreen() {
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const displayName = user?.user_metadata?.name ?? "User";
+  const displayEmail = user?.email ?? "";
+  const initials = displayName.charAt(0).toUpperCase();
+
+  const handleLogout = () => {
+    Alert.alert("Log out", "Are you sure you want to log out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Log out",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            setLoggingOut(true);
+            await authService.signOut();
+            dispatch(clearSession());
+            router.replace("/SignIn");
+          } catch (error: any) {
+            Alert.alert("Error", error.message);
+          } finally {
+            setLoggingOut(false);
+          }
+        },
+      },
+    ]);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* HEADER — outside scroll, full-width border */}
+      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -42,11 +77,11 @@ export default function UserProfileScreen() {
         {/* User */}
         <View style={styles.profileSection}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>A</Text>
+            <Text style={styles.avatarText}>{initials}</Text>
           </View>
 
-          <Text style={styles.name}>Asha Mehta</Text>
-          <Text style={styles.email}>asha.mehta@email.com</Text>
+          <Text style={styles.name}>{displayName}</Text>
+          <Text style={styles.email}>{displayEmail}</Text>
         </View>
 
         {/* Preferences */}
@@ -58,17 +93,12 @@ export default function UserProfileScreen() {
               <View style={styles.iconContainer}>
                 <Sun size={18} color={theme.textSecondary} />
               </View>
-
               <Text style={styles.rowText}>Dark Mode</Text>
             </View>
-
             <Switch
               value={darkMode}
               onValueChange={setDarkMode}
-              trackColor={{
-                false: "#D8D8D8",
-                true: theme.textSecondary,
-              }}
+              trackColor={{ false: "#D8D8D8", true: theme.textSecondary }}
               thumbColor="#fff"
             />
           </View>
@@ -80,17 +110,12 @@ export default function UserProfileScreen() {
               <View style={styles.iconContainer}>
                 <Bell size={18} color={theme.textSecondary} />
               </View>
-
               <Text style={styles.rowText}>Notifications</Text>
             </View>
-
             <Switch
               value={notifications}
               onValueChange={setNotifications}
-              trackColor={{
-                false: "#D8D8D8",
-                true: theme.textSecondary,
-              }}
+              trackColor={{ false: "#D8D8D8", true: theme.textSecondary }}
               thumbColor="#fff"
             />
           </View>
@@ -105,10 +130,8 @@ export default function UserProfileScreen() {
               <View style={styles.iconContainer}>
                 <Lock size={18} color={theme.textSecondary} />
               </View>
-
               <Text style={styles.rowText}>Privacy & Security</Text>
             </View>
-
             <ChevronRight size={18} color="#A0A0A0" />
           </TouchableOpacity>
 
@@ -119,10 +142,8 @@ export default function UserProfileScreen() {
               <View style={styles.iconContainer}>
                 <Info size={18} color={theme.textSecondary} />
               </View>
-
               <Text style={styles.rowText}>Help & Support</Text>
             </View>
-
             <ChevronRight size={18} color="#A0A0A0" />
           </TouchableOpacity>
         </View>
@@ -133,14 +154,21 @@ export default function UserProfileScreen() {
         <View style={styles.card}>
           <View style={styles.row}>
             <Text style={styles.rowText}>Version</Text>
-
             <Text style={styles.version}>1.0.0</Text>
           </View>
         </View>
 
         {/* Logout */}
-        <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.logout}>Log Out</Text>
+        <TouchableOpacity
+          onPress={handleLogout}
+          disabled={loggingOut}
+          activeOpacity={0.7}
+        >
+          {loggingOut ? (
+            <ActivityIndicator color={theme.error} style={{ marginTop: 8 }} />
+          ) : (
+            <Text style={styles.logout}>Log Out</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

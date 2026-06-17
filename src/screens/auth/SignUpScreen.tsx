@@ -5,11 +5,14 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { colors } from "@/themes/colors";
 import { router } from "expo-router";
+import { authService } from "@/services/authService";
 
 const theme = colors.light;
 
@@ -17,6 +20,33 @@ const SignUpScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      Alert.alert("Missing fields", "Please fill in all fields.");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert("Weak password", "Password must be at least 6 characters.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await authService.signUp(name.trim(), email.trim(), password.trim());
+      Alert.alert(
+        "Account created!",
+        "You can now sign in with your credentials.",
+        [{ text: "Sign in", onPress: () => router.replace("/SignIn") }],
+      );
+    } catch (error: any) {
+      Alert.alert("Sign up failed", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,9 +65,11 @@ const SignUpScreen = () => {
               onChangeText={setName}
               placeholder="Your name"
               placeholderTextColor="#B1A898"
+              autoCapitalize="words"
               style={styles.input}
             />
           </View>
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
             <TextInput
@@ -47,6 +79,7 @@ const SignUpScreen = () => {
               placeholderTextColor="#B1A898"
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCorrect={false}
               style={styles.input}
             />
           </View>
@@ -63,8 +96,17 @@ const SignUpScreen = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Sign up</Text>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSignUp}
+            disabled={loading}
+            activeOpacity={0.85}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Sign up</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -81,7 +123,6 @@ const SignUpScreen = () => {
 
 export default SignUpScreen;
 
-// Sign up page stylesheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -143,13 +184,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
 
     shadowColor: theme.primary,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 16,
     elevation: 8,
+  },
+
+  buttonDisabled: {
+    opacity: 0.6,
   },
 
   buttonText: {
