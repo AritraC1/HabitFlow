@@ -4,30 +4,28 @@ A cross-platform mobile habit tracking app built with **React Native (Expo)** an
 
 ## Features
 
-- Email/password authentication (sign up, sign in, sign out)
-- Create, edit, and delete habits (CRUD)
-- Daily habit completion tracking with streaks
-- GitHub-style activity grid per habit
+- Email/password authentication using Supabase
+- Habit create/edit/delete UI flows
+- Daily completion tracking with a GitHub-style activity grid
+- Streak calculation from completion history
 - Fixed habit categories (Health, Fitness, Productivity, Mindfulness, Learning, Finance, Social, Other)
-- Local and push notifications for habit reminders
-- Light mode and dark mode
-- Analytics via per-habit activity grids
+- Empty-state UI for no habits
+- Redux Toolkit state management for auth, habits, and theme
+- Supabase service layer for habits and habit logs
 
 ## Tech Stack
 
-| Layer                | Technology                                |
-|----------------------|-------------------------------------------|
-| Framework            | React Native + Expo (Expo Router)         |
-| Language             | TypeScript                                |
-| State Management     | Redux Toolkit                             |
-| Navigation           | Expo Router                               |
-| Forms & Validation   | React Hook Form                           |
-| HTTP Client          | Axios                                     |
-| Local Persistence    | AsyncStorage / Expo Secure Store          |
-| Backend              | Supabase (Auth + PostgreSQL)              |
-| Notifications        | Expo Notifications                        |
-| Icons                | @expo/vector-icons                        |
-| Charts / Grids       | react-native-svg                          |
+| Layer            | Technology                        |
+| ---------------- | --------------------------------- |
+| Framework        | React Native + Expo (Expo Router) |
+| Language         | TypeScript                        |
+| State Management | Redux Toolkit                     |
+| Backend          | Supabase (Auth + PostgreSQL)      |
+| Persistence      | AsyncStorage                      |
+| Icons            | @expo/vector-icons                |
+
+## Demo
+![Demo](assets/demo/Demo.gif)
 
 ## Getting Started
 
@@ -49,7 +47,7 @@ Create a `.env` file in the project root:
 
 ```
 EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+EXPO_PUBLIC_SUPABASE_KEY=your_supabase_anon_key
 ```
 
 ### Running the App
@@ -63,35 +61,15 @@ npx expo start
 - Press `w` to open in web browser
 - Scan the QR code with Expo Go to run on a physical device
 
-## Project Structure
-
-See [Project Structure](#current-project-structure-post-setup) below for a breakdown of folders and files created by the initial Expo setup, and the planned structure as the app grows.
-
 ## Screens
 
 1. **Sign Up** — Name, email, password
 2. **Sign In** — Email, password
-3. **Home** — List of habits, each with name, streak count, edit icon, and activity grid
-4. **Empty State** — Shown when the user has no habits yet
+3. **Home** — List of habits with streaks and activity grids
+4. **Empty State** — Shown when the user has no habits
 5. **Add Habit** — Name, category, reminder time
-6. **Edit Habit** — Pre-filled form + stats (current streak, best streak, completion %) + delete
-7. **Today / Reminder** — Full-screen habit name with swipe-to-complete
-8. **Profile / Settings** — Theme toggle, notification preferences, logout
-
-## Demo
-![Demo](assets/demo/Demo.gif)
-
-## Roadmap
-
-- [ ] Supabase schema setup (users, habits, habit_logs)
-- [ ] Auth flow wired to Supabase
-- [ ] Redux slices for habits, auth, settings
-- [ ] Activity grid component with real completion data
-- [ ] Streak calculation logic
-- [ ] Notification scheduling (local + push)
-- [ ] Light/dark theme system
-- [ ] Edit/delete habit flow
-- [ ] Empty state logic
-- [ ] Testing & performance polish
+6. **Edit Habit** — Edit fields and delete habit
+7. **Toggle Habit** — Complete a habit for today
+8. **Profile / Settings** — Theme and notification controls, logout
 
 ---
