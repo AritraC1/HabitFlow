@@ -1,31 +1,26 @@
-// All colors
-export const colors = {
-  // Light mode
-  light: {
-    primary: "#2F7D57",
-    primaryLight: "#3E9A6D",
-    background: "#F6F2EA",
-    surface: "#FFFFFF",
-    text: "#2C3A33",
-    textSecondary: "#5F6D65",
-    border: "#D8D1C3",
-    placeholder: "#B1A898",
-    success: "#34D399",
-    warning: "#FBBF24",
-    error: "#fa3b3b",
-  },
+const palette = {
+  primary: "#2E7D5A",
+  primaryDeep: "#1E5A41",
+  primarySoft: "#EAF5EF",
+  error: "#C0533C",
+  amber: "#E0A458",
+};
 
-  // Dark mode
-  dark: {
-    primary: "#14B8A6",
-    primaryLight: "#2DD4BF",
-    background: "#0F172A",
-    surface: "#1E293B",
-    text: "#F8FAFC",
-    textSecondary: "#CBD5E1",
-    border: "#334155",
-    success: "#34D399",
-    warning: "#FBBF24",
-    error: "#F87171",
+export const colors = {
+  light: {
+    background: "#FAF6EF",
+    surface: "#FFFFFF",
+    text: "#1F2A24",
+    textSecondary: "#5F6D65",
+    border: "#E4DECF",
+    ...palette,
   },
-} as const;
+  dark: {
+    background: "#131815",
+    surface: "#1C2420",
+    text: "#F1EFE6",
+    textSecondary: "#9CA89F",
+    border: "#2D3631",
+    ...palette,
+  },
+};

@@ -1,7 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Habit } from "@/interface/habit";
 import { CategoryTypes } from "@/types/categoryTypes";
+import { calculateStreak } from "@/utils/streakUtils";
+import { habitService } from "@/services/habitService";
 
 interface HabitsState {
   habits: Habit[];
@@ -16,6 +18,43 @@ export interface AddHabitPayload {
   category: CategoryTypes | null;
   reminderTime: string;
 }
+
+export const completeHabit = createAsyncThunk(
+  "habits/completeHabit",
+  async (
+    { habitId, userId }: { habitId: string; userId: string },
+    { dispatch },
+  ) => {
+    const today = new Date().toISOString().split("T")[0];
+    await habitService.markComplete(habitId, userId, today);
+    dispatch(markCompletedToday(habitId));
+  },
+);
+
+export const fetchHabitsWithLogs = createAsyncThunk(
+  "habits/fetchWithLogs",
+  async (userId: string) => {
+    const [habits, logs] = await Promise.all([
+      habitService.getHabits(userId),
+      habitService.getLogs(userId),
+    ]);
+
+    return habits.map((habit: any) => ({
+      id: habit.id,
+      name: habit.name,
+      category: habit.category,
+      reminderTime: habit.reminder_time,
+      completedDates: logs
+        .filter((l: any) => l.habit_id === habit.id)
+        .map((l: any) => l.completed_date),
+      streak: calculateStreak(
+        logs
+          .filter((l: any) => l.habit_id === habit.id)
+          .map((l: any) => l.completed_date),
+      ),
+    }));
+  },
+);
 
 const habitsSlice = createSlice({
   name: "habits",
@@ -48,7 +87,7 @@ const habitsSlice = createSlice({
       if (habit.completedDates.includes(today)) return;
 
       habit.completedDates.push(today);
-      habit.streak += 1;
+      habit.streak = calculateStreak(habit.completedDates);
     },
 
     // Update a habit
@@ -67,6 +106,11 @@ const habitsSlice = createSlice({
       habit.category = action.payload.category;
       habit.reminderTime = action.payload.reminderTime;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchHabitsWithLogs.fulfilled, (state, action) => {
+      state.habits = action.payload;
+    });
   },
 });
 
